@@ -1,0 +1,54 @@
+//Import required libraries
+const hubspot = require('@hubspot/api-client');
+const axios = require('axios')
+
+exports.main = (event, callback) => {
+  //Create a new HubSpot Client
+  const hubspotClient = new hubspot.Client({
+    apiKey: process.env.HAPIKEY
+  });
+  const phone = event.inputFields['phone'];
+  const mobilePhone = event.inputFields['mobilephone'];
+  // import the phone numbers
+  const audio = 'Stage 234 - Ben';
+  const stage = 'Stage 2';
+  //set your audio and titel
+
+  let rvmPhone;
+  
+  if (phone){
+    rvmPhone = phone
+  }else if (mobilePhone){
+    rvmPhone = mobilePhone
+  }else{
+    rvmPhone = "null"
+  }
+  //make sure there is a phone number
+  let result2
+  
+  const url = 'https://www.mobile-sphere.com/gateway/vmb.php?c_uid=NailItHandyman.slybroadcast@fwd.appbind.com&c_password=Jg26471818!&c_record_audio=' + audio + '&c_phone=' + rvmPhone + '&c_callerID=8555624548&c_date=now&c_title=' + stage;
+  console.log(url)
+  
+  if (rvmPhone != "null"){
+    axios.post(url)
+    .catch(function (error) {
+    console.log(error);
+    })
+  .then(function (response) {
+    console.log(response.body);
+    })
+    //POST the webhook
+        result2 = "sending RVM"
+      }else{
+        result2 = "No Phone number" 
+      }
+
+  callback({
+    outputFields: {
+      phone: phone,
+      mobilePhone: mobilePhone,
+      rvmPhone: rvmPhone,
+      result2: result2,
+    }
+  });
+}
